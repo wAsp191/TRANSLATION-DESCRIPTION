@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>ITAB TECH TRANSLATOR</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>ITAB TECH TRANSLATOR</h1>
+
+<div class="container">
+
+    <section>
+        <h2>Carica o modifica glossario</h2>
+        <input type="file" id="fileInput">
+        <button onclick="exportGlossary()">Esporta glossario</button>
+
+        <table id="glossaryTable">
+            <thead>
+                <tr>
+                    <th>Italiano</th>
+                    <th>Inglese</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <button onclick="saveGlossary()">Salva glossario</button>
+    </section>
+
+    <section>
+        <h2>Traduzione testo</h2>
+        <textarea id="inputText" placeholder="Inserisci testo da tradurre..."></textarea>
+        <button onclick="translateText()">Traduci</button>
+
+        <h3>Traduzione 1</h3>
+        <textarea id="output1" readonly></textarea>
+
+        <h3>Traduzione 2</h3>
+        <textarea id="output2" readonly></textarea>
+
+        <h3>Termini non presenti</h3>
+        <textarea id="missingTerms" readonly></textarea>
+    </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
+    
