@@ -331,7 +331,10 @@ function translateText() {
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+    console.log("APP JS CARICATO, GLOSSARIO INIZIALE:", glossary);
+
     loadGlossary();
+    console.log("GLOSSARIO DOPO loadGlossary():", glossary);
 
     document.getElementById("saveBtn").onclick = () => {
         readGlossaryFromTable();
