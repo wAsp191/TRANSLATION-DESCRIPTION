@@ -141,7 +141,9 @@ function autoTranslate(word) {
         "centrale": "central",
         "filo": "wire",
         "multilame": "multistrip",
-        "multibarra": "multibar"
+        "multibarra": "multibar",
+        "piede": "foot",
+        "piedino": "foot"
     };
 
     return dict[word.toLowerCase()] || "";
@@ -185,7 +187,7 @@ function showSuggestions(list) {
 }
 
 // ======================================================
-// 5. MOTORE DI TRADUZIONE (MATCH INTELLIGENTE)
+// 5. MOTORE DI TRADUZIONE (MATCH INTELLIGENTE + ASSISTITO)
 // ======================================================
 
 function translateText() {
@@ -203,38 +205,64 @@ function translateText() {
 
     let translated = input.toUpperCase();
 
-    // MATCH INTELLIGENTE
+    // 1) APPLICA IL GLOSSARIO (termini e frasi composte)
     entries.forEach(([it, en]) => {
         const escaped = it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
         translated = translated.replace(regex, en.toUpperCase());
     });
 
+    // 2) TRADUZIONE ASSISTITA PER TERMINI NON NEL GLOSSARIO
+    const tokens = input.split(/([\s,.;:()\/\-]+)/);
+    let finalTranslated = "";
+    const missing = [];
+    const suggestions = [];
+
+    for (let token of tokens) {
+        if (!token.trim() || token.match(/^[\s,.;:()\/\-]+$/)) {
+            finalTranslated += token;
+            continue;
+        }
+
+        const lower = token.toLowerCase();
+        const inGlossary = entries.some(([it]) => it.toLowerCase() === lower);
+
+        if (inGlossary) {
+            const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const regex = new RegExp(escaped, "gi");
+            const match = translated.match(regex);
+            finalTranslated += match ? match[0] : token.toUpperCase();
+        } else {
+            const suggestion = autoTranslate(token);
+            if (suggestion) {
+                finalTranslated += suggestion.toUpperCase();
+                suggestions.push({ it: token, en: suggestion });
+            } else {
+                finalTranslated += token.toUpperCase();
+                missing.push(token);
+            }
+        }
+    }
+
     // TRADUZIONE 1
-    document.getElementById("output1").value = translated;
+    document.getElementById("output1").value = finalTranslated;
 
     // TRADUZIONE 2 (variante)
-    document.getElementById("output2").value = translated.replace(/LISCIO/g, "PLAIN");
+    document.getElementById("output2").value = finalTranslated.replace(/LISCIO/g, "PLAIN");
 
     // TERMINI MANCANTI
-    const words = input.split(/[\s,.;:()\/\-]+/);
-    const missing = [];
+    const uniqueMissing = [...new Set(missing)];
+    document.getElementById("missingTerms").value = uniqueMissing.join("\n");
 
-    words.forEach(w => {
-        const key = w.toLowerCase();
-        const found = entries.some(([it]) => it.toLowerCase() === key);
-        if (!found && w.trim()) missing.push(w);
-    });
+    // SUGGERIMENTI
+    const uniqueSuggestions = Object.values(
+        suggestions.reduce((acc, s) => {
+            acc[s.it.toLowerCase()] = s;
+            return acc;
+        }, {})
+    );
 
-    document.getElementById("missingTerms").value = missing.join("\n");
-
-    // Suggerimenti
-    const suggestions = missing.map(it => ({
-        it,
-        en: autoTranslate(it)
-    }));
-
-    showSuggestions(suggestions);
+    showSuggestions(uniqueSuggestions);
 }
 
 // ======================================================
