@@ -23,7 +23,7 @@ function saveGlossary() {
 
 function renderGlossaryTable() {
     const tbody = document.querySelector("#glossaryTable tbody");
-    tbody.innerHTML = "";
+    tbody.innerinnerHTML = "";
 
     const entries = Object.entries(glossary);
 
@@ -127,63 +127,124 @@ function exportCSV() {
 }
 
 // ======================================================
-// 4. TRADUZIONE ASSISTITA
+// 4. DIZIONARIO ASSISTITO (VERSIONE ESTESA + ABBREVIAZIONI TECNICHE)
 // ======================================================
 
-// Mini-dizionario per suggerimenti automatici
 function autoTranslate(word) {
     const dict = {
-        "liscio": "smooth",
-        "scantonato": "notched",
-        "sganciabile": "detachable",
-        "nervato": "ribbed",
-        "non nervato": "unribbed",
-        "centrale": "central",
-        "filo": "wire",
-        "multilame": "multistrip",
-        "multibarra": "multibar",
-        "piede": "foot",
-        "piedino": "foot"
+
+        // ============================
+        // ARTICOLI
+        // ============================
+        "il": "the", "lo": "the", "la": "the", "i": "the", "gli": "the", "le": "the",
+        "un": "a", "uno": "a", "una": "a",
+
+        // ============================
+        // PREPOSIZIONI
+        // ============================
+        "di": "of", "a": "to", "da": "from", "in": "in", "con": "with", "su": "on",
+        "per": "for", "tra": "between", "fra": "between",
+
+        "del": "of the", "dello": "of the", "della": "of the",
+        "dei": "of the", "degli": "of the", "delle": "of the",
+
+        "al": "to the", "allo": "to the", "alla": "to the",
+        "ai": "to the", "agli": "to the", "alle": "to the",
+
+        "nel": "in the", "nello": "in the", "nella": "in the",
+        "nei": "in the", "negli": "in the", "nelle": "in the",
+
+        "sul": "on the", "sullo": "on the", "sulla": "on the",
+        "sui": "on the", "sugli": "on the", "sulle": "on the",
+
+        // ============================
+        // ABBREVIAZIONI TECNICHE COMUNI
+        // ============================
+        "dx": "RH",          // destra
+        "sx": "LH",          // sinistra
+        "sup": "upper",      // superiore
+        "inf": "lower",      // inferiore
+        "ant": "front",      // anteriore
+        "post": "rear",      // posteriore
+        "int": "inner",      // interno
+        "est": "outer",      // esterno
+        "qty": "qty",        // quantità
+        "q.tà": "qty",
+        "qta": "qty",
+        "ass": "assy",       // assembly
+        "ass.": "assy",
+        "dim": "dim",        // dimension
+        "ref": "ref",        // reference
+        "rif": "ref",
+        "cod": "code",
+        "cod.": "code",
+
+        // ============================
+        // AVVERBI
+        // ============================
+        "qui": "here", "qua": "here", "lì": "there", "là": "there",
+        "sempre": "always", "mai": "never", "spesso": "often",
+        "subito": "immediately", "ora": "now", "poi": "then",
+        "dopo": "after", "prima": "before", "insieme": "together",
+
+        // ============================
+        // CONGIUNZIONI
+        // ============================
+        "e": "and", "ed": "and", "o": "or", "oppure": "or",
+        "ma": "but", "però": "however", "anche": "also",
+        "quindi": "therefore", "se": "if", "come": "as",
+
+        // ============================
+        // VERBI COMUNI
+        // ============================
+        "essere": "be", "avere": "have", "fare": "do",
+        "andare": "go", "venire": "come", "usare": "use",
+        "montare": "assemble", "smontare": "disassemble",
+        "tagliare": "cut", "fissare": "fix",
+
+        // PARTICIPI
+        "montato": "assembled", "montata": "assembled",
+        "smontato": "disassembled", "smontata": "disassembled",
+        "tagliato": "cut", "tagliata": "cut",
+        "fissato": "fixed", "fissata": "fixed",
+
+        // ============================
+        // PAROLE FUNZIONALI
+        // ============================
+        "tutto": "all", "tutta": "all", "tutti": "all", "tutte": "all",
+        "ogni": "every", "qualche": "some", "alcuni": "some", "alcune": "some",
+
+        // ============================
+        // DIREZIONI E POSIZIONI
+        // ============================
+        "sopra": "above", "sotto": "below", "davanti": "in front",
+        "dietro": "behind", "vicino": "near", "lontano": "far",
+        "sinistra": "left", "destra": "right", "centro": "center",
+
+        // ============================
+        // NUMERI
+        // ============================
+        "uno": "one", "due": "two", "tre": "three", "quattro": "four",
+        "cinque": "five", "sei": "six", "sette": "seven", "otto": "eight",
+        "nove": "nine", "dieci": "ten", "venti": "twenty",
+        "trenta": "thirty", "quaranta": "forty", "cinquanta": "fifty",
+        "cento": "hundred",
+
+        // ============================
+        // PAROLE TECNICHE GENERICHE
+        // ============================
+        "parte": "part", "parti": "parts",
+        "zona": "area", "zone": "areas",
+        "punto": "point", "punti": "points",
+        "linea": "line", "linee": "lines",
+        "livello": "level", "livelli": "levels",
+        "sezione": "section", "sezioni": "sections",
+        "tipo": "type", "versione": "version",
+        "modello": "model", "codice": "code",
+        "nota": "note", "note": "notes"
     };
 
     return dict[word.toLowerCase()] || "";
-}
-
-// Mostra suggerimenti
-function showSuggestions(list) {
-    const container = document.getElementById("suggestions");
-    container.innerHTML = "";
-
-    if (list.length === 0) {
-        container.innerHTML = "<p style='font-size:12px;color:#666;'>Nessun termine nuovo.</p>";
-        return;
-    }
-
-    list.forEach(item => {
-        const div = document.createElement("div");
-        div.className = "suggestion-row";
-
-        div.innerHTML = `
-            <input value="${item.it}" readonly>
-            <input value="${item.en}" class="en-edit" placeholder="Traduzione...">
-            <button class="add-btn">Aggiungi</button>
-        `;
-
-        div.querySelector(".add-btn").onclick = () => {
-            const en = div.querySelector(".en-edit").value.trim();
-            if (!en) {
-                alert("Inserisci una traduzione valida.");
-                return;
-            }
-
-            glossary[item.it.toLowerCase()] = en;
-            saveGlossary();
-            renderGlossaryTable();
-            div.remove();
-        };
-
-        container.appendChild(div);
-    });
 }
 
 // ======================================================
@@ -199,20 +260,17 @@ function translateText() {
 
     readGlossaryFromTable();
 
-    // Ordina per lunghezza decrescente (match frasi lunghe prima)
     const entries = Object.entries(glossary)
         .sort((a, b) => b[0].length - a[0].length);
 
     let translated = input.toUpperCase();
 
-    // 1) APPLICA IL GLOSSARIO (termini e frasi composte)
     entries.forEach(([it, en]) => {
         const escaped = it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
         translated = translated.replace(regex, en.toUpperCase());
     });
 
-    // 2) TRADUZIONE ASSISTITA PER TERMINI NON NEL GLOSSARIO
     const tokens = input.split(/([\s,.;:()\/\-]+)/);
     let finalTranslated = "";
     const missing = [];
@@ -244,17 +302,12 @@ function translateText() {
         }
     }
 
-    // TRADUZIONE 1
     document.getElementById("output1").value = finalTranslated;
-
-    // TRADUZIONE 2 (variante)
     document.getElementById("output2").value = finalTranslated.replace(/LISCIO/g, "PLAIN");
 
-    // TERMINI MANCANTI
     const uniqueMissing = [...new Set(missing)];
     document.getElementById("missingTerms").value = uniqueMissing.join("\n");
 
-    // SUGGERIMENTI
     const uniqueSuggestions = Object.values(
         suggestions.reduce((acc, s) => {
             acc[s.it.toLowerCase()] = s;
