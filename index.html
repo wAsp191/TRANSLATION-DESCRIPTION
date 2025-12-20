@@ -2,9 +2,11 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>ITAB TECH TRANSLATOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITAB Tech Translator</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header>
@@ -14,14 +16,18 @@
 
 <main class="container">
 
+    <!-- ============================
+         SEZIONE GLOSSARIO
+    ============================= -->
     <section class="panel">
         <h2>Glossario</h2>
 
         <div class="controls">
-            <label class="file-label">
-                <span>Importa glossario CSV (Italiano;Inglese)</span>
-                <input type="file" id="fileInput" accept=".csv">
+            <label for="fileInput" class="file-label">
+                Importa glossario CSV (Italiano;Inglese)
             </label>
+            <input type="file" id="fileInput" accept=".csv">
+
             <button id="exportBtn">Esporta glossario</button>
             <button id="saveBtn">Salva glossario</button>
         </div>
@@ -35,7 +41,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Righe glossario generate via JS -->
+                    <!-- Righe generate da app.js -->
                 </tbody>
             </table>
         </div>
@@ -43,6 +49,9 @@
         <button id="addRowBtn" class="secondary">+ Aggiungi riga</button>
     </section>
 
+    <!-- ============================
+         SEZIONE TRADUZIONE
+    ============================= -->
     <section class="panel">
         <h2>Traduzione testo</h2>
 
@@ -54,15 +63,15 @@
         <h3>Traduzione 1 (maiuscolo)</h3>
         <textarea id="output1" readonly></textarea>
 
-        <h3>Traduzione 2 (variante, maiuscolo)</h3>
+        <h3>Traduzione 2 (variante)</h3>
         <textarea id="output2" readonly></textarea>
 
-        <h3>Termini mancanti (da valutare per il glossario)</h3>
+        <h3>Termini mancanti</h3>
         <textarea id="missingTerms" readonly></textarea>
 
         <h3>Proposte di traduzione assistita</h3>
         <div id="suggestions" class="suggestions-container">
-            <!-- Proposte generate via JS -->
+            <!-- Suggerimenti generati da app.js -->
         </div>
     </section>
 
