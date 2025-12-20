@@ -23,7 +23,7 @@ function saveGlossary() {
 
 function renderGlossaryTable() {
     const tbody = document.querySelector("#glossaryTable tbody");
-    tbody.innerinnerHTML = "";
+    tbody.innerHTML = "";
 
     const entries = Object.entries(glossary);
 
