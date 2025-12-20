@@ -4,14 +4,12 @@
 
 let glossary = {};
 
-// Carica glossario da LocalStorage
 function loadGlossary() {
     const stored = localStorage.getItem("glossary");
     glossary = stored ? JSON.parse(stored) : {};
     renderGlossaryTable();
 }
 
-// Salva glossario su LocalStorage
 function saveGlossary() {
     localStorage.setItem("glossary", JSON.stringify(glossary));
     alert("Glossario salvato.");
@@ -29,25 +27,18 @@ function renderGlossaryTable() {
 
     if (entries.length === 0) {
         const row = document.createElement("tr");
-        row.innerHTML = `
-            <td contenteditable="true"></td>
-            <td contenteditable="true"></td>
-        `;
+        row.innerHTML = `<td contenteditable="true"></td><td contenteditable="true"></td>`;
         tbody.appendChild(row);
         return;
     }
 
     entries.forEach(([it, en]) => {
         const row = document.createElement("tr");
-        row.innerHTML = `
-            <td contenteditable="true">${it}</td>
-            <td contenteditable="true">${en}</td>
-        `;
+        row.innerHTML = `<td contenteditable="true">${it}</td><td contenteditable="true">${en}</td>`;
         tbody.appendChild(row);
     });
 }
 
-// Legge la tabella e aggiorna il glossario
 function readGlossaryFromTable() {
     const rows = document.querySelectorAll("#glossaryTable tbody tr");
     const newGlossary = {};
@@ -61,14 +52,10 @@ function readGlossaryFromTable() {
     glossary = newGlossary;
 }
 
-// Aggiunge una riga vuota
 function addRow() {
     const tbody = document.querySelector("#glossaryTable tbody");
     const row = document.createElement("tr");
-    row.innerHTML = `
-        <td contenteditable="true"></td>
-        <td contenteditable="true"></td>
-    `;
+    row.innerHTML = `<td contenteditable="true"></td><td contenteditable="true"></td>`;
     tbody.appendChild(row);
 }
 
@@ -78,7 +65,6 @@ function addRow() {
 
 function importCSV(file) {
     const reader = new FileReader();
-
     reader.onload = function (evt) {
         const lines = evt.target.result.split(/\r?\n/);
         const imported = {};
@@ -86,12 +72,10 @@ function importCSV(file) {
         lines.forEach((line, index) => {
             if (!line.trim()) return;
             const parts = line.split(";");
-
             if (parts.length < 2) return;
 
             let it = parts[0].trim();
             let en = parts[1].trim();
-
             if (index === 0 && it.toLowerCase() === "italiano") return;
 
             imported[it.toLowerCase()] = en;
@@ -108,19 +92,16 @@ function importCSV(file) {
 
 function exportCSV() {
     let csv = "Italiano;Inglese\n";
-
     Object.entries(glossary).forEach(([it, en]) => {
         csv += `${it};${en}\n`;
     });
 
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
-
     const a = document.createElement("a");
     a.href = url;
     a.download = "glossario_itab.csv";
     a.click();
-
     URL.revokeObjectURL(url);
 }
 
@@ -132,39 +113,25 @@ function autoTranslate(word) {
     const dict = {
         "il": "the", "lo": "the", "la": "the", "i": "the", "gli": "the", "le": "the",
         "un": "a", "uno": "a", "una": "a",
-
         "di": "of", "a": "to", "da": "from", "in": "in", "con": "with",
         "su": "on", "per": "for", "tra": "between", "fra": "between",
-
         "del": "of the", "dello": "of the", "della": "of the",
         "dei": "of the", "degli": "of the", "delle": "of the",
-
         "al": "to the", "allo": "to the", "alla": "to the",
         "ai": "to the", "agli": "to the", "alle": "to the",
-
         "nel": "in the", "nello": "in the", "nella": "in the",
         "nei": "in the", "negli": "in the", "nelle": "in the",
-
-        "dx": "RH", "sx": "LH",
-        "sup": "upper", "inf": "lower",
-        "ant": "front", "post": "rear",
-        "int": "inner", "est": "outer",
-        "rif": "ref", "cod": "code",
-        "qty": "qty", "qta": "qty",
-
+        "dx": "RH", "sx": "LH", "sup": "upper", "inf": "lower",
+        "ant": "front", "post": "rear", "int": "inner", "est": "outer",
+        "rif": "ref", "cod": "code", "qty": "qty", "qta": "qty",
         "montato": "assembled", "montata": "assembled",
         "smontato": "disassembled", "smontata": "disassembled",
         "tagliato": "cut", "tagliata": "cut",
         "fissato": "fixed", "fissata": "fixed",
-
-        "parte": "part", "parti": "parts",
-        "zona": "area", "zone": "areas",
-        "punto": "point", "punti": "points",
-        "linea": "line", "linee": "lines",
-        "livello": "level", "livelli": "levels",
-        "sezione": "section", "sezioni": "sections",
-        "tipo": "type", "versione": "version",
-        "modello": "model", "codice": "code",
+        "parte": "part", "parti": "parts", "zona": "area", "zone": "areas",
+        "punto": "point", "punti": "points", "linea": "line", "linee": "lines",
+        "livello": "level", "livelli": "levels", "sezione": "section", "sezioni": "sections",
+        "tipo": "type", "versione": "version", "modello": "model", "codice": "code",
         "nota": "note", "note": "notes"
     };
 
@@ -187,7 +154,6 @@ function showSuggestions(list) {
     list.forEach(item => {
         const div = document.createElement("div");
         div.className = "suggestion-row";
-
         div.innerHTML = `
             <input value="${item.it}" readonly>
             <input value="${item.en}" class="en-edit" placeholder="Traduzione...">
@@ -200,7 +166,6 @@ function showSuggestions(list) {
                 alert("Inserisci una traduzione valida.");
                 return;
             }
-
             glossary[item.it.toLowerCase()] = en;
             saveGlossary();
             renderGlossaryTable();
@@ -212,7 +177,7 @@ function showSuggestions(list) {
 }
 
 // ======================================================
-// 6. MOTORE DI TRADUZIONE (VERSIONE CORRETTA)
+// 6. TRADUZIONE (VERSIONE CORRETTA)
 // ======================================================
 
 function translateText() {
@@ -222,14 +187,8 @@ function translateText() {
         return;
     }
 
-    // ❌ NON leggere la tabella qui
-    // readGlossaryFromTable();
-
-    // Usa il glossario salvato
-    const entries = Object.entries(glossary)
-        .sort((a, b) => b[0].length - a[0].length);
-
-    let translated = input.toUpperCase();
+    const entries = Object.entries(glossary).sort((a, b) => b[0].length - a[0].length);
+    let translated = input;
 
     // 1) Applica glossario
     entries.forEach(([it, en]) => {
@@ -270,11 +229,10 @@ function translateText() {
         }
     }
 
-    document.getElementById("output1").value = finalTranslated;
-    document.getElementById("output2").value = finalTranslated.replace(/LISCIO/g, "PLAIN");
+    document.getElementById("output1").value = finalTranslated.toUpperCase();
+    document.getElementById("output2").value = finalTranslated.toUpperCase();
 
-    const uniqueMissing = [...new Set(missing)];
-    document.getElementById("missingTerms").value = uniqueMissing.join("\n");
+    document.getElementById("missingTerms").value = [...new Set(missing)].join("\n");
 
     const uniqueSuggestions = Object.values(
         suggestions.reduce((acc, s) => {
