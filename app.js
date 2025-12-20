@@ -264,8 +264,10 @@ function translateText() {
         return;
     }
 
-    readGlossaryFromTable();
+    // ❌ NON leggere la tabella qui
+    // readGlossaryFromTable();
 
+    // Usa il glossario già caricato da loadGlossary()
     const entries = Object.entries(glossary)
         .sort((a, b) => b[0].length - a[0].length);
 
