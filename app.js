@@ -76,7 +76,6 @@ function addRow() {
 // 3. IMPORT / EXPORT CSV
 // ======================================================
 
-// Import CSV (Italiano;Inglese)
 function importCSV(file) {
     const reader = new FileReader();
 
@@ -107,7 +106,6 @@ function importCSV(file) {
     reader.readAsText(file, "UTF-8");
 }
 
-// Esporta CSV
 function exportCSV() {
     let csv = "Italiano;Inglese\n";
 
@@ -127,23 +125,19 @@ function exportCSV() {
 }
 
 // ======================================================
-// 4. DIZIONARIO ASSISTITO (VERSIONE ESTESA + ABBREVIAZIONI TECNICHE)
+// 4. DIZIONARIO ASSISTITO (BASE + ABBREVIAZIONI TECNICHE)
 // ======================================================
 
 function autoTranslate(word) {
     const dict = {
 
-        // ============================
         // ARTICOLI
-        // ============================
         "il": "the", "lo": "the", "la": "the", "i": "the", "gli": "the", "le": "the",
         "un": "a", "uno": "a", "una": "a",
 
-        // ============================
         // PREPOSIZIONI
-        // ============================
-        "di": "of", "a": "to", "da": "from", "in": "in", "con": "with", "su": "on",
-        "per": "for", "tra": "between", "fra": "between",
+        "di": "of", "a": "to", "da": "from", "in": "in", "con": "with",
+        "su": "on", "per": "for", "tra": "between", "fra": "between",
 
         "del": "of the", "dello": "of the", "della": "of the",
         "dei": "of the", "degli": "of the", "delle": "of the",
@@ -157,46 +151,26 @@ function autoTranslate(word) {
         "sul": "on the", "sullo": "on the", "sulla": "on the",
         "sui": "on the", "sugli": "on the", "sulle": "on the",
 
-        // ============================
-        // ABBREVIAZIONI TECNICHE COMUNI
-        // ============================
-        "dx": "RH",          // destra
-        "sx": "LH",          // sinistra
-        "sup": "upper",      // superiore
-        "inf": "lower",      // inferiore
-        "ant": "front",      // anteriore
-        "post": "rear",      // posteriore
-        "int": "inner",      // interno
-        "est": "outer",      // esterno
-        "qty": "qty",        // quantità
-        "q.tà": "qty",
-        "qta": "qty",
-        "ass": "assy",       // assembly
-        "ass.": "assy",
-        "dim": "dim",        // dimension
-        "ref": "ref",        // reference
-        "rif": "ref",
-        "cod": "code",
-        "cod.": "code",
+        // ABBREVIAZIONI TECNICHE
+        "dx": "RH", "sx": "LH",
+        "sup": "upper", "inf": "lower",
+        "ant": "front", "post": "rear",
+        "int": "inner", "est": "outer",
+        "rif": "ref", "cod": "code",
+        "qty": "qty", "qta": "qty",
 
-        // ============================
         // AVVERBI
-        // ============================
         "qui": "here", "qua": "here", "lì": "there", "là": "there",
         "sempre": "always", "mai": "never", "spesso": "often",
         "subito": "immediately", "ora": "now", "poi": "then",
-        "dopo": "after", "prima": "before", "insieme": "together",
+        "dopo": "after", "prima": "before",
 
-        // ============================
         // CONGIUNZIONI
-        // ============================
         "e": "and", "ed": "and", "o": "or", "oppure": "or",
         "ma": "but", "però": "however", "anche": "also",
         "quindi": "therefore", "se": "if", "come": "as",
 
-        // ============================
-        // VERBI COMUNI
-        // ============================
+        // VERBI BASE
         "essere": "be", "avere": "have", "fare": "do",
         "andare": "go", "venire": "come", "usare": "use",
         "montare": "assemble", "smontare": "disassemble",
@@ -208,31 +182,23 @@ function autoTranslate(word) {
         "tagliato": "cut", "tagliata": "cut",
         "fissato": "fixed", "fissata": "fixed",
 
-        // ============================
         // PAROLE FUNZIONALI
-        // ============================
         "tutto": "all", "tutta": "all", "tutti": "all", "tutte": "all",
         "ogni": "every", "qualche": "some", "alcuni": "some", "alcune": "some",
 
-        // ============================
-        // DIREZIONI E POSIZIONI
-        // ============================
+        // POSIZIONI
         "sopra": "above", "sotto": "below", "davanti": "in front",
         "dietro": "behind", "vicino": "near", "lontano": "far",
         "sinistra": "left", "destra": "right", "centro": "center",
 
-        // ============================
         // NUMERI
-        // ============================
         "uno": "one", "due": "two", "tre": "three", "quattro": "four",
         "cinque": "five", "sei": "six", "sette": "seven", "otto": "eight",
         "nove": "nine", "dieci": "ten", "venti": "twenty",
         "trenta": "thirty", "quaranta": "forty", "cinquanta": "fifty",
         "cento": "hundred",
 
-        // ============================
         // PAROLE TECNICHE GENERICHE
-        // ============================
         "parte": "part", "parti": "parts",
         "zona": "area", "zone": "areas",
         "punto": "point", "punti": "points",
@@ -248,7 +214,47 @@ function autoTranslate(word) {
 }
 
 // ======================================================
-// 5. MOTORE DI TRADUZIONE (MATCH INTELLIGENTE + ASSISTITO)
+// 5. SUGGERIMENTI
+// ======================================================
+
+function showSuggestions(list) {
+    const container = document.getElementById("suggestions");
+    container.innerHTML = "";
+
+    if (!list || list.length === 0) {
+        container.innerHTML = "<p style='font-size:12px;color:#666;'>Nessun termine nuovo.</p>";
+        return;
+    }
+
+    list.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "suggestion-row";
+
+        div.innerHTML = `
+            <input value="${item.it}" readonly>
+            <input value="${item.en}" class="en-edit" placeholder="Traduzione...">
+            <button class="add-btn">Aggiungi</button>
+        `;
+
+        div.querySelector(".add-btn").onclick = () => {
+            const en = div.querySelector(".en-edit").value.trim();
+            if (!en) {
+                alert("Inserisci una traduzione valida.");
+                return;
+            }
+
+            glossary[item.it.toLowerCase()] = en;
+            saveGlossary();
+            renderGlossaryTable();
+            div.remove();
+        };
+
+        container.appendChild(div);
+    });
+}
+
+// ======================================================
+// 6. MOTORE DI TRADUZIONE
 // ======================================================
 
 function translateText() {
@@ -265,12 +271,14 @@ function translateText() {
 
     let translated = input.toUpperCase();
 
+    // 1) Applica glossario
     entries.forEach(([it, en]) => {
         const escaped = it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
         translated = translated.replace(regex, en.toUpperCase());
     });
 
+    // 2) Traduzione assistita
     const tokens = input.split(/([\s,.;:()\/\-]+)/);
     let finalTranslated = "";
     const missing = [];
@@ -319,7 +327,7 @@ function translateText() {
 }
 
 // ======================================================
-// 6. EVENTI
+// 7. EVENTI
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
