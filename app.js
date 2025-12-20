@@ -4,12 +4,14 @@
 
 let glossary = {};
 
+// Carica glossario da LocalStorage e aggiorna tabella
 function loadGlossary() {
     const stored = localStorage.getItem("glossary");
     glossary = stored ? JSON.parse(stored) : {};
     renderGlossaryTable();
 }
 
+// Salva glossario su LocalStorage
 function saveGlossary() {
     localStorage.setItem("glossary", JSON.stringify(glossary));
     alert("Glossario salvato.");
@@ -27,18 +29,25 @@ function renderGlossaryTable() {
 
     if (entries.length === 0) {
         const row = document.createElement("tr");
-        row.innerHTML = `<td contenteditable="true"></td><td contenteditable="true"></td>`;
+        row.innerHTML = `
+            <td contenteditable="true"></td>
+            <td contenteditable="true"></td>
+        `;
         tbody.appendChild(row);
         return;
     }
 
     entries.forEach(([it, en]) => {
         const row = document.createElement("tr");
-        row.innerHTML = `<td contenteditable="true">${it}</td><td contenteditable="true">${en}</td>`;
+        row.innerHTML = `
+            <td contenteditable="true">${it}</td>
+            <td contenteditable="true">${en}</td>
+        `;
         tbody.appendChild(row);
     });
 }
 
+// Legge la tabella e aggiorna il glossario
 function readGlossaryFromTable() {
     const rows = document.querySelectorAll("#glossaryTable tbody tr");
     const newGlossary = {};
@@ -46,16 +55,22 @@ function readGlossaryFromTable() {
     rows.forEach(row => {
         const it = row.children[0].innerText.trim();
         const en = row.children[1].innerText.trim();
-        if (it && en) newGlossary[it.toLowerCase()] = en;
+        if (it && en) {
+            newGlossary[it.toLowerCase()] = en;
+        }
     });
 
     glossary = newGlossary;
 }
 
+// Aggiunge una riga vuota
 function addRow() {
     const tbody = document.querySelector("#glossaryTable tbody");
     const row = document.createElement("tr");
-    row.innerHTML = `<td contenteditable="true"></td><td contenteditable="true"></td>`;
+    row.innerHTML = `
+        <td contenteditable="true"></td>
+        <td contenteditable="true"></td>
+    `;
     tbody.appendChild(row);
 }
 
@@ -65,17 +80,21 @@ function addRow() {
 
 function importCSV(file) {
     const reader = new FileReader();
+
     reader.onload = function (evt) {
         const lines = evt.target.result.split(/\r?\n/);
         const imported = {};
 
         lines.forEach((line, index) => {
             if (!line.trim()) return;
+
             const parts = line.split(";");
             if (parts.length < 2) return;
 
             let it = parts[0].trim();
             let en = parts[1].trim();
+
+            // Salta eventuale intestazione
             if (index === 0 && it.toLowerCase() === "italiano") return;
 
             imported[it.toLowerCase()] = en;
@@ -92,16 +111,19 @@ function importCSV(file) {
 
 function exportCSV() {
     let csv = "Italiano;Inglese\n";
+
     Object.entries(glossary).forEach(([it, en]) => {
         csv += `${it};${en}\n`;
     });
 
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
+
     const a = document.createElement("a");
     a.href = url;
     a.download = "glossario_itab.csv";
     a.click();
+
     URL.revokeObjectURL(url);
 }
 
@@ -113,25 +135,39 @@ function autoTranslate(word) {
     const dict = {
         "il": "the", "lo": "the", "la": "the", "i": "the", "gli": "the", "le": "the",
         "un": "a", "uno": "a", "una": "a",
+
         "di": "of", "a": "to", "da": "from", "in": "in", "con": "with",
         "su": "on", "per": "for", "tra": "between", "fra": "between",
+
         "del": "of the", "dello": "of the", "della": "of the",
         "dei": "of the", "degli": "of the", "delle": "of the",
+
         "al": "to the", "allo": "to the", "alla": "to the",
         "ai": "to the", "agli": "to the", "alle": "to the",
+
         "nel": "in the", "nello": "in the", "nella": "in the",
         "nei": "in the", "negli": "in the", "nelle": "in the",
-        "dx": "RH", "sx": "LH", "sup": "upper", "inf": "lower",
-        "ant": "front", "post": "rear", "int": "inner", "est": "outer",
-        "rif": "ref", "cod": "code", "qty": "qty", "qta": "qty",
+
+        "dx": "RH", "sx": "LH",
+        "sup": "upper", "inf": "lower",
+        "ant": "front", "post": "rear",
+        "int": "inner", "est": "outer",
+        "rif": "ref", "cod": "code",
+        "qty": "qty", "qta": "qty",
+
         "montato": "assembled", "montata": "assembled",
         "smontato": "disassembled", "smontata": "disassembled",
         "tagliato": "cut", "tagliata": "cut",
         "fissato": "fixed", "fissata": "fixed",
-        "parte": "part", "parti": "parts", "zona": "area", "zone": "areas",
-        "punto": "point", "punti": "points", "linea": "line", "linee": "lines",
-        "livello": "level", "livelli": "levels", "sezione": "section", "sezioni": "sections",
-        "tipo": "type", "versione": "version", "modello": "model", "codice": "code",
+
+        "parte": "part", "parti": "parts",
+        "zona": "area", "zone": "areas",
+        "punto": "point", "punti": "points",
+        "linea": "line", "linee": "lines",
+        "livello": "level", "livelli": "levels",
+        "sezione": "section", "sezioni": "sections",
+        "tipo": "type", "versione": "version",
+        "modello": "model", "codice": "code",
         "nota": "note", "note": "notes"
     };
 
@@ -154,6 +190,7 @@ function showSuggestions(list) {
     list.forEach(item => {
         const div = document.createElement("div");
         div.className = "suggestion-row";
+
         div.innerHTML = `
             <input value="${item.it}" readonly>
             <input value="${item.en}" class="en-edit" placeholder="Traduzione...">
@@ -166,6 +203,7 @@ function showSuggestions(list) {
                 alert("Inserisci una traduzione valida.");
                 return;
             }
+
             glossary[item.it.toLowerCase()] = en;
             saveGlossary();
             renderGlossaryTable();
@@ -177,7 +215,7 @@ function showSuggestions(list) {
 }
 
 // ======================================================
-// 6. TRADUZIONE (VERSIONE CORRETTA)
+// 6. MOTORE DI TRADUZIONE
 // ======================================================
 
 function translateText() {
@@ -187,38 +225,44 @@ function translateText() {
         return;
     }
 
-    const entries = Object.entries(glossary).sort((a, b) => b[0].length - a[0].length);
-    let translated = input;
+    // Ordina il glossario dalla chiave più lunga alla più corta
+    const entries = Object.entries(glossary)
+        .sort((a, b) => b[0].length - a[0].length);
 
-    // 1) Applica glossario
+    // 1) Applica il glossario sull’intero testo
+    let textAfterGlossary = input;
+
     entries.forEach(([it, en]) => {
+        if (!it) return;
         const escaped = it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
         const regex = new RegExp(escaped, "gi");
-        translated = translated.replace(regex, en.toUpperCase());
+        textAfterGlossary = textAfterGlossary.replace(regex, en.toUpperCase());
     });
 
-    // 2) Traduzione assistita
-    const tokens = input.split(/([\s,.;:()\/\-]+)/);
+    // 2) Traduzione assistita per le parole rimaste in italiano
+    const tokens = textAfterGlossary.split(/([\s,.;:()\/\-]+)/);
     let finalTranslated = "";
     const missing = [];
     const suggestions = [];
 
     for (let token of tokens) {
+        // separatori / spazi / punteggiatura: copiali così come sono
         if (!token.trim() || token.match(/^[\s,.;:()\/\-]+$/)) {
             finalTranslated += token;
             continue;
         }
 
         const lower = token.toLowerCase();
+
+        // Se era nel glossario, ormai è già in inglese (maiuscolo)
         const inGlossary = entries.some(([it]) => it.toLowerCase() === lower);
 
         if (inGlossary) {
-            const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-            const regex = new RegExp(escaped, "gi");
-            const match = translated.match(regex);
-            finalTranslated += match ? match[0] : token.toUpperCase();
+            // Normalmente qui non dovremmo più entrare, ma per sicurezza:
+            finalTranslated += token.toUpperCase();
         } else {
-            const suggestion = autoTranslate(token);
+            // Prova con il dizionario assistito
+            const suggestion = autoTranslate(lower);
             if (suggestion) {
                 finalTranslated += suggestion.toUpperCase();
                 suggestions.push({ it: token, en: suggestion });
@@ -229,11 +273,15 @@ function translateText() {
         }
     }
 
-    document.getElementById("output1").value = finalTranslated.toUpperCase();
-    document.getElementById("output2").value = finalTranslated.toUpperCase();
+    // Output
+    document.getElementById("output1").value = finalTranslated;
+    document.getElementById("output2").value = finalTranslated;
 
-    document.getElementById("missingTerms").value = [...new Set(missing)].join("\n");
+    // Termini mancanti (unici)
+    const uniqueMissing = [...new Set(missing.map(w => w.toLowerCase()))];
+    document.getElementById("missingTerms").value = uniqueMissing.join("\n");
 
+    // Suggerimenti unici
     const uniqueSuggestions = Object.values(
         suggestions.reduce((acc, s) => {
             acc[s.it.toLowerCase()] = s;
