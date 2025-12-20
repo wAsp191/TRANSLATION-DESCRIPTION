@@ -1,5 +1,17 @@
 let glossary = JSON.parse(localStorage.getItem("glossary")) || {};
 
+function autoTranslate(word) {
+    const dictionary = {
+        "liscio": "smooth",
+        "scantonato": "notched",
+        "sganciabile": "detachable",
+        "non": "",
+        "nervato": "ribbed",
+        "non nervato": "unribbed"
+    };
+
+    return dictionary[word.toLowerCase()] || "";
+}
 function saveGlossary() {
     const rows = document.querySelectorAll("#glossaryTable tbody tr");
     glossary = {};
