@@ -1,34 +1,25 @@
-// =========================
-// GLOSSARIO (LOCALSTORAGE)
-// =========================
+// ======================================================
+// 1. GESTIONE GLOSSARIO (LOCALSTORAGE)
+// ======================================================
 
 let glossary = {};
 
-// Carica glossario da LocalStorage all'avvio
-function loadGlossaryFromStorage() {
+// Carica glossario da LocalStorage
+function loadGlossary() {
     const stored = localStorage.getItem("glossary");
-    if (stored) {
-        try {
-            glossary = JSON.parse(stored);
-        } catch (e) {
-            console.error("Errore parsing glossario:", e);
-            glossary = {};
-        }
-    } else {
-        glossary = {};
-    }
+    glossary = stored ? JSON.parse(stored) : {};
     renderGlossaryTable();
 }
 
 // Salva glossario su LocalStorage
-function saveGlossaryToStorage() {
+function saveGlossary() {
     localStorage.setItem("glossary", JSON.stringify(glossary));
-    alert("Glossario salvato nel browser.");
+    alert("Glossario salvato.");
 }
 
-// =========================
-// TABELLA GLOSSARIO
-// =========================
+// ======================================================
+// 2. TABELLA GLOSSARIO
+// ======================================================
 
 function renderGlossaryTable() {
     const tbody = document.querySelector("#glossaryTable tbody");
@@ -37,7 +28,6 @@ function renderGlossaryTable() {
     const entries = Object.entries(glossary);
 
     if (entries.length === 0) {
-        // riga vuota iniziale
         const row = document.createElement("tr");
         row.innerHTML = `
             <td contenteditable="true"></td>
@@ -57,7 +47,7 @@ function renderGlossaryTable() {
     });
 }
 
-// Legge la tabella e aggiorna l'oggetto glossary
+// Legge la tabella e aggiorna il glossario
 function readGlossaryFromTable() {
     const rows = document.querySelectorAll("#glossaryTable tbody tr");
     const newGlossary = {};
@@ -65,16 +55,14 @@ function readGlossaryFromTable() {
     rows.forEach(row => {
         const it = row.children[0].innerText.trim();
         const en = row.children[1].innerText.trim();
-        if (it && en) {
-            newGlossary[it.toLowerCase()] = en;
-        }
+        if (it && en) newGlossary[it.toLowerCase()] = en;
     });
 
     glossary = newGlossary;
 }
 
-// Aggiungi una riga vuota alla tabella
-function addGlossaryRow() {
+// Aggiunge una riga vuota
+function addRow() {
     const tbody = document.querySelector("#glossaryTable tbody");
     const row = document.createElement("tr");
     row.innerHTML = `
@@ -84,53 +72,46 @@ function addGlossaryRow() {
     tbody.appendChild(row);
 }
 
-// =========================
-// IMPORT / EXPORT CSV
-// =========================
+// ======================================================
+// 3. IMPORT / EXPORT CSV
+// ======================================================
 
 // Import CSV (Italiano;Inglese)
-function importGlossaryFromCSV(file) {
+function importCSV(file) {
     const reader = new FileReader();
+
     reader.onload = function (evt) {
-        const text = evt.target.result;
-        const lines = text.split(/\r?\n/);
+        const lines = evt.target.result.split(/\r?\n/);
         const imported = {};
 
         lines.forEach((line, index) => {
             if (!line.trim()) return;
             const parts = line.split(";");
+
             if (parts.length < 2) return;
 
             let it = parts[0].trim();
             let en = parts[1].trim();
 
-            // salta eventuali header tipo "Italiano;Inglese"
             if (index === 0 && it.toLowerCase() === "italiano") return;
 
-            if (it && en) {
-                imported[it.toLowerCase()] = en;
-            }
+            imported[it.toLowerCase()] = en;
         });
 
         glossary = imported;
-        saveGlossaryToStorage();
+        saveGlossary();
         renderGlossaryTable();
-        alert("Glossario importato dal CSV.");
+        alert("Glossario importato.");
     };
 
     reader.readAsText(file, "UTF-8");
 }
 
-// Esporta glossario in CSV (Italiano;Inglese)
-function exportGlossaryToCSV() {
-    const entries = Object.entries(glossary);
-    if (entries.length === 0) {
-        alert("Glossario vuoto, niente da esportare.");
-        return;
-    }
-
+// Esporta CSV
+function exportCSV() {
     let csv = "Italiano;Inglese\n";
-    entries.forEach(([it, en]) => {
+
+    Object.entries(glossary).forEach(([it, en]) => {
         csv += `${it};${en}\n`;
     });
 
@@ -140,24 +121,21 @@ function exportGlossaryToCSV() {
     const a = document.createElement("a");
     a.href = url;
     a.download = "glossario_itab.csv";
-    document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+
     URL.revokeObjectURL(url);
 }
 
-// =========================
-// TRADUZIONE ASSISTITA
-// =========================
+// ======================================================
+// 4. TRADUZIONE ASSISTITA
+// ======================================================
 
-// Dizionario base per suggerimenti automatici (puoi espanderlo)
+// Mini-dizionario per suggerimenti automatici
 function autoTranslate(word) {
-    const dictionary = {
+    const dict = {
         "liscio": "smooth",
         "scantonato": "notched",
         "sganciabile": "detachable",
-        "piede": "foot",
-        "piedino": "foot",
         "nervato": "ribbed",
         "non nervato": "unribbed",
         "centrale": "central",
@@ -166,16 +144,16 @@ function autoTranslate(word) {
         "multibarra": "multibar"
     };
 
-    return dictionary[word.toLowerCase()] || "";
+    return dict[word.toLowerCase()] || "";
 }
 
-// Mostra la lista di suggerimenti modificabili
+// Mostra suggerimenti
 function showSuggestions(list) {
     const container = document.getElementById("suggestions");
     container.innerHTML = "";
 
     if (list.length === 0) {
-        container.innerHTML = "<p style='font-size:12px; color:#6b7280;'>Nessun termine nuovo da suggerire.</p>";
+        container.innerHTML = "<p style='font-size:12px;color:#666;'>Nessun termine nuovo.</p>";
         return;
     }
 
@@ -185,24 +163,20 @@ function showSuggestions(list) {
 
         div.innerHTML = `
             <input value="${item.it}" readonly>
-            <input value="${item.en}" class="en-edit" placeholder="Inserisci traduzione...">
-            <button class="add-btn">Aggiungi al glossario</button>
+            <input value="${item.en}" class="en-edit" placeholder="Traduzione...">
+            <button class="add-btn">Aggiungi</button>
         `;
 
-        const addBtn = div.querySelector(".add-btn");
-        const enInput = div.querySelector(".en-edit");
-
-        addBtn.onclick = () => {
-            const itKey = item.it.trim().toLowerCase();
-            const enValue = enInput.value.trim();
-            if (!enValue) {
-                alert("Inserisci una traduzione inglese prima di aggiungere al glossario.");
+        div.querySelector(".add-btn").onclick = () => {
+            const en = div.querySelector(".en-edit").value.trim();
+            if (!en) {
+                alert("Inserisci una traduzione valida.");
                 return;
             }
-            glossary[itKey] = enValue;
-            saveGlossaryToStorage();
+
+            glossary[item.it.toLowerCase()] = en;
+            saveGlossary();
             renderGlossaryTable();
-            alert(`Aggiunto al glossario:\n${item.it} → ${enValue}`);
             div.remove();
         };
 
@@ -210,61 +184,52 @@ function showSuggestions(list) {
     });
 }
 
-// =========================
-// MOTORE DI TRADUZIONE
-// =========================
+// ======================================================
+// 5. MOTORE DI TRADUZIONE (MATCH INTELLIGENTE)
+// ======================================================
 
 function translateText() {
     const input = document.getElementById("inputText").value;
     if (!input.trim()) {
-        alert("Inserisci del testo da tradurre.");
+        alert("Inserisci del testo.");
         return;
     }
 
-    // Ordina il glossario per lunghezza decrescente della chiave italiana
+    readGlossaryFromTable();
+
+    // Ordina per lunghezza decrescente (match frasi lunghe prima)
     const entries = Object.entries(glossary)
         .sort((a, b) => b[0].length - a[0].length);
 
-    // Lavoriamo su una versione maiuscola del testo, per rispettare il requisito
     let translated = input.toUpperCase();
 
-    // MATCH INTELLIGENTE: sostituisce termini del glossario anche dentro frasi più lunghe
+    // MATCH INTELLIGENTE
     entries.forEach(([it, en]) => {
-        if (!it) return;
         const escaped = it.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-        const pattern = new RegExp(escaped, "gi");
-        translated = translated.replace(pattern, en.toUpperCase());
-    });
-
-    // Rilevazione termini mancanti (grezza ma utile per suggerimenti)
-    const words = input.split(/[\s,.;:()\/\-]+/);
-    const missing = new Set();
-
-    words.forEach(w => {
-        const clean = w.trim();
-        if (!clean) return;
-        const key = clean.toLowerCase();
-
-        // verifica se esiste esattamente come voce di glossario
-        const found = entries.some(([it]) => it.toLowerCase() === key);
-        if (!found) {
-            missing.add(clean);
-        }
+        const regex = new RegExp(escaped, "gi");
+        translated = translated.replace(regex, en.toUpperCase());
     });
 
     // TRADUZIONE 1
     document.getElementById("output1").value = translated;
 
-    // TRADUZIONE 2 (esempio semplice: LISCIO → PLAIN)
-    const variant = translated.replace(/LISCIO/g, "PLAIN");
-    document.getElementById("output2").value = variant;
+    // TRADUZIONE 2 (variante)
+    document.getElementById("output2").value = translated.replace(/LISCIO/g, "PLAIN");
 
-    // Lista testuale dei termini mancanti
-    const missingList = [...missing];
-    document.getElementById("missingTerms").value = missingList.join("\n");
+    // TERMINI MANCANTI
+    const words = input.split(/[\s,.;:()\/\-]+/);
+    const missing = [];
 
-    // Costruisci lista di suggerimenti con traduzione assistita
-    const suggestions = missingList.map(it => ({
+    words.forEach(w => {
+        const key = w.toLowerCase();
+        const found = entries.some(([it]) => it.toLowerCase() === key);
+        if (!found && w.trim()) missing.push(w);
+    });
+
+    document.getElementById("missingTerms").value = missing.join("\n");
+
+    // Suggerimenti
+    const suggestions = missing.map(it => ({
         it,
         en: autoTranslate(it)
     }));
@@ -272,42 +237,27 @@ function translateText() {
     showSuggestions(suggestions);
 }
 
-// =========================
-// EVENT LISTENERS
-// =========================
+// ======================================================
+// 6. EVENTI
+// ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    // Carica glossario da LocalStorage
-    loadGlossaryFromStorage();
+    loadGlossary();
 
-    // Pulsante salva glossario
-    document.getElementById("saveBtn").addEventListener("click", () => {
+    document.getElementById("saveBtn").onclick = () => {
         readGlossaryFromTable();
-        saveGlossaryToStorage();
-    });
+        saveGlossary();
+    };
 
-    // Pulsante esporta glossario
-    document.getElementById("exportBtn").addEventListener("click", () => {
-        readGlossaryFromTable();
-        exportGlossaryToCSV();
-    });
+    document.getElementById("exportBtn").onclick = exportCSV;
 
-    // Pulsante aggiungi riga
-    document.getElementById("addRowBtn").addEventListener("click", () => {
-        addGlossaryRow();
-    });
+    document.getElementById("addRowBtn").onclick = addRow;
 
-    // Pulsante traduci
-    document.getElementById("translateBtn").addEventListener("click", () => {
-        readGlossaryFromTable();
-        translateText();
-    });
+    document.getElementById("translateBtn").onclick = translateText;
 
-    // Import CSV
-    document.getElementById("fileInput").addEventListener("change", (e) => {
+    document.getElementById("fileInput").addEventListener("change", e => {
         const file = e.target.files[0];
-        if (!file) return;
-        importGlossaryFromCSV(file);
+        if (file) importCSV(file);
         e.target.value = "";
     });
 });
