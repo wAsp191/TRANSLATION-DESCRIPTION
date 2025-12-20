@@ -1,44 +1,43 @@
-<!-- Trigger GitHub Pages rebuild -->
-
 <!DOCTYPE html>
-<html lang="it" class="notranslate" translate="no">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ITAB TECH TRANSLATOR</title>
 
-    <!-- Blocca Google Translate automatico -->
-    <meta name="google" content="notranslate">
-
-    <title>ITAB Tech Translator</title>
+    <!-- Collegamento al CSS -->
     <link rel="stylesheet" href="style.css">
+
+    <!-- Font Inter (opzionale ma consigliato) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<header>
-    <h1>ITAB TECH TRANSLATOR</h1>
-    <p>Traduzione tecnica basata su glossario locale</p>
-</header>
+    <h1 style="font-size:22px; font-weight:600; margin-bottom:20px; color:#222;">
+        ITAB TECH TRANSLATOR
+    </h1>
 
-<main class="container">
+    <div class="container">
 
-    <!-- ============================
-         SEZIONE GLOSSARIO
-    ============================= -->
-    <section class="panel">
-        <h2>Glossario</h2>
+        <!-- ============================
+             PANNELLO GLOSSARIO
+        ============================= -->
+        <div class="panel">
+            <h2>Glossario</h2>
 
-        <div class="controls">
-            <label for="fileInput" class="file-label">
-                Importa glossario CSV (Italiano;Inglese)
-            </label>
-            <input type="file" id="fileInput" accept=".csv">
+            <p style="font-size:13px; color:#666; margin-top:-10px;">
+                Gestisci il glossario tecnico IT → EN
+            </p>
 
-            <button id="exportBtn">Esporta glossario</button>
-            <button id="saveBtn">Salva glossario</button>
-        </div>
+            <!-- Import CSV -->
+            <input type="file" id="fileInput" accept=".csv" style="margin-bottom:10px;">
 
-        <div class="table-wrapper">
+            <div style="display:flex; gap:10px; margin-bottom:15px;">
+                <button id="exportBtn" class="secondary">Esporta glossario</button>
+                <button id="saveBtn">Salva glossario</button>
+            </div>
+
+            <!-- Tabella glossario -->
             <table id="glossaryTable">
                 <thead>
                     <tr>
@@ -46,43 +45,40 @@
                         <th>Inglese</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Righe generate da app.js -->
-                </tbody>
+                <tbody></tbody>
             </table>
+
+            <button id="addRowBtn" class="secondary" style="margin-top:10px;">+ Aggiungi riga</button>
         </div>
 
-        <button id="addRowBtn" class="secondary">+ Aggiungi riga</button>
-    </section>
+        <!-- ============================
+             PANNELLO TRADUZIONE
+        ============================= -->
+        <div class="panel">
+            <h2>Traduzione testo</h2>
 
-    <!-- ============================
-         SEZIONE TRADUZIONE
-    ============================= -->
-    <section class="panel">
-        <h2>Traduzione testo</h2>
+            <label for="inputText" style="font-size:14px; font-weight:500;">Testo italiano da tradurre</label>
+            <textarea id="inputText" placeholder="Inserisci qui il testo tecnico in italiano..."></textarea>
 
-        <label for="inputText" class="block-label">Testo italiano da tradurre</label>
-        <textarea id="inputText" placeholder="Inserisci qui il testo tecnico in italiano..."></textarea>
+            <button id="translateBtn" style="margin-top:10px;">Traduci</button>
 
-        <button id="translateBtn" class="primary">Traduci</button>
+            <h3 style="margin-top:20px; font-size:16px;">Traduzione 1 (maiuscolo)</h3>
+            <textarea id="output1" readonly></textarea>
 
-        <h3>Traduzione 1 (maiuscolo)</h3>
-        <textarea id="output1" readonly></textarea>
+            <h3 style="margin-top:20px; font-size:16px;">Traduzione 2 (variante)</h3>
+            <textarea id="output2" readonly></textarea>
 
-        <h3>Traduzione 2 (variante)</h3>
-        <textarea id="output2" readonly></textarea>
+            <h3 style="margin-top:20px; font-size:16px;">Termini mancanti</h3>
+            <textarea id="missingTerms" readonly></textarea>
 
-        <h3>Termini mancanti</h3>
-        <textarea id="missingTerms" readonly></textarea>
-
-        <h3>Proposte di traduzione assistita</h3>
-        <div id="suggestions" class="suggestions-container">
-            <!-- Suggerimenti generati da app.js -->
+            <h3 style="margin-top:20px; font-size:16px;">Proposte di traduzione assistita</h3>
+            <div id="suggestions"></div>
         </div>
-    </section>
 
-</main>
+    </div>
 
-<script src="app.js"></script>
+    <!-- Script principale -->
+    <script src="app.js"></script>
+
 </body>
 </html>
