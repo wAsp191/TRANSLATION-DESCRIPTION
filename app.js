@@ -125,17 +125,14 @@ function exportCSV() {
 }
 
 // ======================================================
-// 4. DIZIONARIO ASSISTITO (BASE + ABBREVIAZIONI TECNICHE)
+// 4. DIZIONARIO ASSISTITO
 // ======================================================
 
 function autoTranslate(word) {
     const dict = {
-
-        // ARTICOLI
         "il": "the", "lo": "the", "la": "the", "i": "the", "gli": "the", "le": "the",
         "un": "a", "uno": "a", "una": "a",
 
-        // PREPOSIZIONI
         "di": "of", "a": "to", "da": "from", "in": "in", "con": "with",
         "su": "on", "per": "for", "tra": "between", "fra": "between",
 
@@ -148,10 +145,6 @@ function autoTranslate(word) {
         "nel": "in the", "nello": "in the", "nella": "in the",
         "nei": "in the", "negli": "in the", "nelle": "in the",
 
-        "sul": "on the", "sullo": "on the", "sulla": "on the",
-        "sui": "on the", "sugli": "on the", "sulle": "on the",
-
-        // ABBREVIAZIONI TECNICHE
         "dx": "RH", "sx": "LH",
         "sup": "upper", "inf": "lower",
         "ant": "front", "post": "rear",
@@ -159,46 +152,11 @@ function autoTranslate(word) {
         "rif": "ref", "cod": "code",
         "qty": "qty", "qta": "qty",
 
-        // AVVERBI
-        "qui": "here", "qua": "here", "lì": "there", "là": "there",
-        "sempre": "always", "mai": "never", "spesso": "often",
-        "subito": "immediately", "ora": "now", "poi": "then",
-        "dopo": "after", "prima": "before",
-
-        // CONGIUNZIONI
-        "e": "and", "ed": "and", "o": "or", "oppure": "or",
-        "ma": "but", "però": "however", "anche": "also",
-        "quindi": "therefore", "se": "if", "come": "as",
-
-        // VERBI BASE
-        "essere": "be", "avere": "have", "fare": "do",
-        "andare": "go", "venire": "come", "usare": "use",
-        "montare": "assemble", "smontare": "disassemble",
-        "tagliare": "cut", "fissare": "fix",
-
-        // PARTICIPI
         "montato": "assembled", "montata": "assembled",
         "smontato": "disassembled", "smontata": "disassembled",
         "tagliato": "cut", "tagliata": "cut",
         "fissato": "fixed", "fissata": "fixed",
 
-        // PAROLE FUNZIONALI
-        "tutto": "all", "tutta": "all", "tutti": "all", "tutte": "all",
-        "ogni": "every", "qualche": "some", "alcuni": "some", "alcune": "some",
-
-        // POSIZIONI
-        "sopra": "above", "sotto": "below", "davanti": "in front",
-        "dietro": "behind", "vicino": "near", "lontano": "far",
-        "sinistra": "left", "destra": "right", "centro": "center",
-
-        // NUMERI
-        "uno": "one", "due": "two", "tre": "three", "quattro": "four",
-        "cinque": "five", "sei": "six", "sette": "seven", "otto": "eight",
-        "nove": "nine", "dieci": "ten", "venti": "twenty",
-        "trenta": "thirty", "quaranta": "forty", "cinquanta": "fifty",
-        "cento": "hundred",
-
-        // PAROLE TECNICHE GENERICHE
         "parte": "part", "parti": "parts",
         "zona": "area", "zone": "areas",
         "punto": "point", "punti": "points",
@@ -254,7 +212,7 @@ function showSuggestions(list) {
 }
 
 // ======================================================
-// 6. MOTORE DI TRADUZIONE
+// 6. MOTORE DI TRADUZIONE (VERSIONE CORRETTA)
 // ======================================================
 
 function translateText() {
@@ -267,7 +225,7 @@ function translateText() {
     // ❌ NON leggere la tabella qui
     // readGlossaryFromTable();
 
-    // Usa il glossario già caricato da loadGlossary()
+    // Usa il glossario salvato
     const entries = Object.entries(glossary)
         .sort((a, b) => b[0].length - a[0].length);
 
