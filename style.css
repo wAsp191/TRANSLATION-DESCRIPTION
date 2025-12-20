@@ -1,196 +1,95 @@
-* {
-    box-sizing: border-box;
-}
-
+/* Font moderna e leggibile */
 body {
-    font-family: Arial, sans-serif;
+    font-family: "Inter", "Segoe UI", Roboto, sans-serif;
+    background: #f7f7f7;
     margin: 0;
-    padding: 0;
-    background: #f3f4f6;
-    color: #222;
+    padding: 20px;
+    color: #333;
 }
 
-header {
-    background: #1f2933;
-    color: #f9fafb;
-    padding: 16px 24px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-header h1 {
-    margin: 0;
-    font-size: 24px;
-}
-
-header p {
-    margin: 4px 0 0 0;
-    font-size: 13px;
-    opacity: 0.8;
-}
-
+/* Layout principale */
 .container {
     display: flex;
-    gap: 24px;
-    padding: 20px 24px 32px 24px;
+    gap: 20px;
     align-items: flex-start;
 }
 
+/* Pannelli */
 .panel {
-    background: #ffffff;
-    padding: 16px 18px 20px 18px;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    width: 50%;
-    min-width: 0;
+    flex: 1;
 }
 
-h2 {
+/* Titoli */
+.panel h2 {
     margin-top: 0;
     font-size: 18px;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 8px;
-    margin-bottom: 12px;
+    font-weight: 600;
+    color: #222;
 }
 
-h3 {
-    margin-top: 16px;
-    margin-bottom: 6px;
-    font-size: 14px;
-    color: #374151;
-}
-
-.controls {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 10px;
-    align-items: center;
-}
-
-.file-label {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 13px;
-    cursor: pointer;
-}
-
-.file-label input[type="file"] {
-    display: none;
-}
-
-button {
-    border: none;
-    border-radius: 4px;
-    padding: 6px 10px;
-    font-size: 13px;
-    cursor: pointer;
-    background: #e5e7eb;
-    color: #111827;
-}
-
-button.primary {
-    background: #2563eb;
-    color: white;
-}
-
-button.secondary {
-    background: #e5e7eb;
-    color: #111827;
-    margin-top: 8px;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
-.block-label {
-    display: block;
-    font-size: 13px;
-    margin-bottom: 4px;
-}
-
-textarea {
-    width: 100%;
-    min-height: 80px;
-    resize: vertical;
-    padding: 6px 8px;
-    border-radius: 4px;
-    border: 1px solid #d1d5db;
-    font-family: Consolas, "Courier New", monospace;
-    font-size: 13px;
-    background: #f9fafb;
-}
-
-textarea[readonly] {
-    background: #f3f4f6;
-}
-
-.table-wrapper {
-    max-height: 280px;
-    overflow: auto;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
-}
-
+/* Tabelle */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 13px;
+    font-size: 14px;
 }
 
-th, td {
-    border-bottom: 1px solid #e5e7eb;
-    padding: 4px 6px;
-}
-
-th {
-    background: #f3f4f6;
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-td {
-    background: #ffffff;
-}
-
-td[contenteditable="true"] {
-    cursor: text;
-}
-
-.suggestions-container {
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
+table td {
+    border-bottom: 1px solid #e0e0e0;
     padding: 6px;
-    max-height: 200px;
-    overflow: auto;
-    background: #f9fafb;
 }
 
+/* Textarea */
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+/* Bottoni */
+button {
+    background: #0078d4;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+button:hover {
+    background: #005fa3;
+}
+
+/* Bottoni secondari */
+button.secondary {
+    background: #e0e0e0;
+    color: #333;
+}
+
+button.secondary:hover {
+    background: #d5d5d5;
+}
+
+/* Sezione suggerimenti */
 .suggestion-row {
     display: flex;
-    gap: 6px;
-    margin-bottom: 6px;
-    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
 }
 
 .suggestion-row input {
     flex: 1;
-    padding: 4px 6px;
-    border-radius: 4px;
-    border: 1px solid #d1d5db;
-    font-size: 12px;
-}
-
-.suggestion-row input[readonly] {
-    background: #f3f4f6;
-}
-
-.suggestion-row button {
-    white-space: nowrap;
-    font-size: 12px;
-    padding: 4px 8px;
-    background: #10b981;
-    color: white;
+    padding: 6px;
+    border: 1px solid #d0d0d0;
+    border-radius: 6px;
 }
